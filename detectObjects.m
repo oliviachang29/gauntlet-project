@@ -2,7 +2,7 @@ function [line_inliers, circle_inliers, circle_center] = detectObjects(points, b
     current_points = points;
     
     % look for circle
-    [circle_center, circle_inliers, circle_outliers] = circleRansac(current_points, bob_radius, 4000, 0.001);
+    [circle_center, circle_inliers, circle_outliers] = circleRansac(current_points, bob_radius, 5000, 0.001);
     % if the "circle" inlier set is too small to plausibly be part of a
     % circle, then ignore
     if size(circle_inliers,1) < 5
