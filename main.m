@@ -1,18 +1,20 @@
-placeNeato(0, 0, 1, 0)
-pause(2)
+reset_neato();
 
 syms x y
 bob_radius = 0.25;
 
 position = [0 0];
 heading  = [1 0];
-all_line_inliers   = [NaN NaN];
-all_circle_inliers = [NaN NaN];
+all_line_inliers   = [100 100];
+all_circle_inliers = [100 100];
+
+%figure
+%hold on
 
 stop = false;
 while ~stop
     [r, theta] = scan();
-    angle = atan2(heading(2), heading(1)) * 180/pi;
+    angle = atan2(heading(2), heading(1));
     points = convertLidarToGlobal(r, theta, position, angle);
     [line_inliers, circle_inliers, circle_center] = detectObjects(points, bob_radius);
 
@@ -20,9 +22,23 @@ while ~stop
     all_circle_inliers = union(all_circle_inliers, circle_inliers, 'rows');
     
     p_field = create_potential_field(all_line_inliers, all_circle_inliers);
-    grad = gradient(p_field, [x y]);
-    grad = double(subs(grad, [x y], position)');
+    
+    % x = [-1.5, 2.5]; y = [-3, 1]
+    %[xs, ys] = meshgrid(-1.5:0.1:2.5, -3:0.1:1);
+    %v = double(subs(p_field, {x, y}, {xs, ys}));
+    
+    %contour(xs, ys, v, 'k', 'ShowText', 'On');
+    %axis equal
+    
+    grad = gradient(p_field, [x, y]);
+    grad = double(subs(grad, {x, y}, {position(1), position(2)}))';
+    
+    %plot(line_inliers(:, 1), line_inliers(:, 2), 'bo');
+    %plot(circle_inliers(:, 1), circle_inliers(:, 2), 'g.');
+    
+    %plot(position(1), position(2), 'rx')
+    %quiver(position(1), position(2), position(1) + heading(1), position(2) + heading(2))
 
-   %[position, heading] = drive(grad, position, heading);
-    pause(0.05);
+    [position, heading] = drive(grad, position, heading);
+    pause(0.1);
 end
