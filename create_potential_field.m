@@ -1,9 +1,15 @@
-function [potential_field] = create_potential_field(inliers, potential_field)
+function [p_field] = create_potential_field(line_inliers, circle_inliers)
 
 syms x y
 
-for i=1:length(inliers)
-    potential_field = potential_field + ln(sqrt((x-inliers(1))^2 + (y-inliers(2))^2));
+p_field = 0;
+
+for i=1:length(line_inliers)
+    p_field = p_field + log(sqrt((x-line_inliers(1))^2 + (y-line_inliers(2))^2));
+end
+
+for i=1:length(circle_inliers)
+    p_field = p_field - log(sqrt((x-circle_inliers(1))^2 + (y-circle_inliers(2))^2));
 end
 
 end
