@@ -3,7 +3,7 @@ function [position, heading] = drive(v, position, heading)
 angular_speed = 0.2;
 linear_speed  = 0.5;
 wheel_base    = 0.235;
-lambda        = 0.001;
+lambda        = 1;
 
 pub = rospublisher('/raw_vel');
 msg = rosmessage(pub);

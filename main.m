@@ -11,13 +11,20 @@ all_circle_inliers = [100 100];
 %figure
 %hold on
 
+all_positions = [0 0];
+
+save_i = 0;
+
 stop = false;
 while ~stop
+    save_i = save_i + 1;
     [r, theta] = scan();
     angle = atan2(heading(2), heading(1));
     points = convertLidarToGlobal(r, theta, position, angle);
     [line_inliers, circle_inliers, circle_center] = detectObjects(points, bob_radius);
 
+    save(['scan' num2str(save_i) '.mat'], 'line_inliers', 'circle_inliers');
+    
     all_line_inliers   = union(all_line_inliers, line_inliers, 'rows');
     all_circle_inliers = union(all_circle_inliers, circle_inliers, 'rows');
     
@@ -39,6 +46,9 @@ while ~stop
     %plot(position(1), position(2), 'rx')
     %quiver(position(1), position(2), position(1) + heading(1), position(2) + heading(2))
 
-    [position, heading] = drive(grad, position, heading);
+    grad = grad * 0.03 * (0.5 ^ (save_i-1));
+    [position, heading] = drive(grad, position, heading)
+    
+    all_positions(end+1,:) = position;
     pause(0.1);
 end
