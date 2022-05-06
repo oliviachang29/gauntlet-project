@@ -10,8 +10,6 @@ function [points] = convertLidarToGlobal(r_lidar, theta_lidar, neato_pos, neato_
     % the origin of the Lidar frame in the Neato frame (ihat_N, jhat_N).
     origin_of_lidar_frame = [-0.084 0];
     
-    % FIX: this theta is not the rotation from the global frame, but the
-    % rotation from the neato heading!
     cartesian_points_in_l_frame = [cos(theta_lidar).*r_lidar...
                                    sin(theta_lidar).*r_lidar]';
       

@@ -21,7 +21,7 @@ while ~stop
     [r, theta] = scan();
     angle = atan2(heading(2), heading(1));
     points = convertLidarToGlobal(r, theta, position, angle);
-    [line_inliers, circle_inliers, circle_center] = detectObjects(points, bob_radius);
+    [line_inliers, circle_inliers, circle_center, ~] = detectObjects(points, bob_radius);
 
     save(['scan' num2str(save_i) '.mat'], 'line_inliers', 'circle_inliers');
     
