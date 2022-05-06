@@ -1,7 +1,8 @@
-function [best_inlier_set, best_outlier_set] = lineRansac(points, n, distance_threshold)
+function [best_end_points, best_inlier_set, best_outlier_set] = lineRansac(points, n, distance_threshold)
     % define variables for saving the line fit
     best_inlier_set = zeros(0,2);
     best_outlier_set = zeros(0,2);
+    best_end_points = zeros(0,2);
 
     % try to fit n number of times
     for i=1:n
@@ -47,6 +48,10 @@ function [best_inlier_set, best_outlier_set] = lineRansac(points, n, distance_th
         if biggest_gap < 0.2  && sum(inliers) > size(best_inlier_set,1)
             best_inlier_set = points(inliers,:); % points where logical array is true
             best_outlier_set = points(~inliers, :); % points where logical array is not true
+            %these two lines find a nice set of endpoints for plotting the best
+            %fit line
+            projected_coordinate = diffs(inliers, :)*v/norm(v);
+            best_end_points = [min(projected_coordinate); max(projected_coordinate)]*v'/norm(v) + repmat(candidates(2, :), [2, 1]);
         end
     end
     
